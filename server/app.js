@@ -5,11 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-/**
- * Route Imports
- */
-var signup = require('./routes/signup');
-
 var app = express();
 
 app.use(favicon());
@@ -44,7 +39,7 @@ if (app.get('env') === 'production') {
 /**
  * Routes
  */
-app.use('/signup', signup);
+var router = require('./router')(app);
 
 // Error Handling
 app.use(function(err, req, res, next) {
