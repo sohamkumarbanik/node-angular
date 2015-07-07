@@ -1,52 +1,49 @@
 var express = require('express');
 var path = require('path');
-var http = require('http');
 var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
 
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 
 /**
  * Development Settings
  */
-
-if ('development' == app.get('env')) {
-// This will change in production since we'll be using the dist folder
-app.use(express.static(path.join(__dirname, '../client/.tmp')));
-
-// This covers serving up the index page
-app.use(express.static(path.join(__dirname, '../client/app')));
-
-// This is the new way to handle errors in Express 4. not errorHandler().
-// For more about error-first best practices see http://fredkschott.com/post/2014/03/understanding-error-first-callbacks-in-node-js/
-app.use(function(err, req, res, next){
-  console.error(err.stack);
-  res.send(500, 'Something broke!');
-});
-
+if (app.get('env') === 'development') {
+	
+	// This will change in production since we'll be using the dist folder
+	// This covers serving up the index page
+	app.use(express.static(path.join(__dirname, '../client')));
+	app.use(express.static(path.join(__dirname, '../client/.tmp')));
+	app.use(express.static(path.join(__dirname, '../client/app')));
+	
 }
 
 /**
  * Production Settings
  */
-if('production' == app.get('env')) {
-app.use(express.static(path.join(__dirname, '/dist')));
+if (app.get('env') === 'production') {
+
+	// changes it to use the optimized version for production
+	app.use(express.static(path.join(__dirname, '/dist')));
+
 }
 
-/* Add this to fire the server */
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+/**
+ * Routes
+ */
+var router = require('./router')(app);
+
+// Error Handling
+app.use(function(err, req, res, next) {
+	res.status(err.status || 500);
 });
 
 module.exports = app;
