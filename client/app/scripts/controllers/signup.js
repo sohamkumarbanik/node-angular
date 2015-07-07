@@ -46,11 +46,11 @@ angular.module('clientApp') // make sure this is set to whatever it is in your c
 			var request = $http.post('/signup', user);
 
 			request.success(function (data) {
-				console.log(data.msg);
+				console.log(data);
 			});
 
 			request.error(function (data) {
-				console.log(data.msg);
+				console.log(data);
 			});
 
 		};
