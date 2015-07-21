@@ -4,6 +4,11 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var flash = require('connect-flash');
+
+// Configuring Passport
+var passport = require('passport');
+var expressSession = require('express-session');
 
 var app = express();
 
@@ -12,6 +17,12 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+app.use(flash());
+
+// Configuring Passport
+app.use(expressSession({secret: 'mySecretKey'}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 /**
  * Development Settings
